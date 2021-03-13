@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -596,6 +596,7 @@ sub rds_list_instances {
             Engine => $instance->{Engine},
             StorageType => $instance->{StorageType},
             DBInstanceStatus => $instance->{DBInstanceStatus},
+            AllocatedStorage => $instance->{AllocatedStorage}
         };
     }
 
@@ -626,6 +627,7 @@ sub rds_list_clusters {
             DatabaseName => $cluster->{DatabaseName},
             Engine => $cluster->{Engine},
             Status => $cluster->{Status},
+            AllocatedStorage => $cluster->{AllocatedStorage}
         };
     }
 

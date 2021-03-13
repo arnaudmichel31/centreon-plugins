@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -31,7 +31,8 @@ sub new {
 
     $self->{version} = '0.1';
     $self->{modes} = {
-        'bucket'  => 'cloud::google::gcp::storage::mode::bucket'
+        'bucket'    => 'cloud::google::gcp::storage::mode::bucket',
+        'discovery' => 'cloud::google::gcp::storage::mode::discovery'
     };
 
     $self->{custom_modes}->{api} = 'cloud::google::gcp::custom::api';

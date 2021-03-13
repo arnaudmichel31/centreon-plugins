@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -35,29 +35,29 @@ sub set_system {
 
     $self->{thresholds} = {
         fan => [
-            ['unknown', 'UNKNOWN'],
-            ['down', 'CRITICAL'],
-            ['up', 'OK'],
-
             ['normal', 'OK'],
             ['warning', 'WARNING'],
             ['critical', 'CRITICAL'],
             ['shutdown', 'CRITICAL'],
             ['not present', 'OK'],
             ['not functioning', 'WARNING'],
+    
+            ['unknown', 'UNKNOWN'],
+            ['down', 'CRITICAL'],
+            ['up', 'OK']
         ],
-        psu => [
+        psu => [            
+            ['normal', 'OK'],
+            ['warning', 'WARNING'],
+            ['critical', 'CRITICAL'],
+            ['shutdown', 'CRITICAL'],
+            ['not present', 'OK'],
+            ['not functioning', 'WARNING'],
+
             ['^off*', 'WARNING'],
             ['failed', 'CRITICAL'],
             ['onButFanFail|onButInlinePowerFail', 'WARNING'],
-            ['on', 'OK'],
-            
-            ['normal', 'OK'],
-            ['warning', 'WARNING'],
-            ['critical', 'CRITICAL'],
-            ['shutdown', 'CRITICAL'],
-            ['not present', 'OK'],
-            ['not functioning', 'WARNING'],
+            ['on', 'OK']
         ],
         temperature => [
             ['normal', 'OK'],
@@ -65,7 +65,7 @@ sub set_system {
             ['critical', 'CRITICAL'],
             ['shutdown', 'CRITICAL'],
             ['not present', 'OK'],
-            ['not functioning', 'WARNING'],
+            ['not functioning', 'WARNING']
         ],
         voltage => [
             ['normal', 'OK'],
@@ -73,24 +73,24 @@ sub set_system {
             ['critical', 'CRITICAL'],
             ['shutdown', 'CRITICAL'],
             ['not present', 'OK'],
-            ['not functioning', 'WARNING'],
+            ['not functioning', 'WARNING']
         ],
         module => [
             ['unknown|mdr', 'UNKNOWN'],
             ['disabled|okButDiagFailed|missing|mismatchWithParent|mismatchConfig|dormant|outOfServiceAdmin|outOfServiceEnvTemp|powerCycled|okButPowerOverWarning|okButAuthFailed|fwMismatchFound|fwDownloadFailure', 'WARNING'],
             ['failed|diagFailed|poweredDown|powerDenied|okButPowerOverCritical', 'CRITICAL'],
-            ['boot|selfTest|poweredUp|syncInProgress|upgrading|fwDownloadSuccess|ok', 'OK'],
+            ['boot|selfTest|poweredUp|syncInProgress|upgrading|fwDownloadSuccess|ok', 'OK']
         ],
         physical => [
             ['other', 'UNKNOWN'],
             ['incompatible|unsupported', 'CRITICAL'],
-            ['supported', 'OK'],
+            ['supported', 'OK']
         ],
         sensor => [
             ['ok', 'OK'],
             ['unavailable', 'OK'],
-            ['nonoperational', 'CRITICAL'],
-        ],
+            ['nonoperational', 'CRITICAL']
+        ]
     };
 
     $self->{components_path} = 'centreon::common::cisco::standard::snmp::mode::components';

@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -532,6 +532,23 @@ sub azure_get_log_analytics_set_cmd {
 }
 
 sub azure_get_log_analytics {
+    my ($self, %options) = @_;
+
+    my $cmd_options = $self->azure_get_log_analytics_set_cmd(%options);
+    return $self->execute(cmd_options => $cmd_options);
+}
+
+sub azure_get_publicip_set_cmd {
+    my ($self, %options) = @_;
+
+    return if (defined($self->{option_results}->{command_options}) && $self->{option_results}->{command_options} ne '');
+
+    my $cmd_options = "network public-ip show --resource-group '$options{resource_group}' --name '$options{resource}'";
+    $cmd_options .= " --subscription '$self->{subscription}'" if (defined($self->{subscription}) && $self->{subscription} ne '');
+    return $cmd_options;
+}
+
+sub azure_get_publicip {
     my ($self, %options) = @_;
 
     my $cmd_options = $self->azure_get_log_analytics_set_cmd(%options);

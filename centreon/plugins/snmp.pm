@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -66,8 +66,8 @@ sub new {
             'securityengineid:s' => { name => 'snmp_security_engine_id' },
             'snmp-errors-exit:s' => { name => 'snmp_errors_exit', default => 'unknown' },
         });
+        $options{options}->add_help(package => __PACKAGE__, sections => 'SNMP OPTIONS');
     }
-    $options{options}->add_help(package => __PACKAGE__, sections => 'SNMP OPTIONS');
 
     #####
     $self->{session} = undef;

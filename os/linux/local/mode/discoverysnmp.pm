@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -95,6 +95,7 @@ my $lookup_type = [
     { type => 'macos', re => qr/Darwin/i },
     { type => 'hp-ux', re => qr/HP-UX/i },
     { type => 'freebsd', re => qr/FreeBSD/i },
+    { type => 'aix', re => qr/ AIX / },
 ];
 
 sub define_type {

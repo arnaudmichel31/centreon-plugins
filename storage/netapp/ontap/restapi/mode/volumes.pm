@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -153,7 +153,8 @@ sub new {
     bless $self, $class;
     
     $options{options}->add_options(arguments => { 
-        'filter-name:s' => { name => 'filter_name' }
+        'filter-name:s'         => { name => 'filter_name' },
+        'filter-vserver-name:s' => { name => 'filter_vserver_name' }
     });
     
     return $self;
@@ -166,14 +167,22 @@ sub manage_selection {
 
     $self->{volumes} = {};
     foreach (@{$volumes->{records}}) {
+        my $name = defined($_->{svm}) && $_->{svm}->{name} ne '' ?
+            $_->{svm}->{name} . ':' . $_->{name} :
+            $_->{name};
+        if (defined($self->{option_results}->{filter_vserver_name}) && $self->{option_results}->{filter_vserver_name} ne '' &&
+            defined($_->{svm}) && $_->{svm}->{name} ne '' &&  $_->{svm}->{name} !~ /$self->{option_results}->{filter_vserver_name}/) {
+            $self->{output}->output_add(long_msg => "skipping '" . $_->{svm}->{name} . "': no matching filter.", debug => 1);
+            next;
+        }
         if (defined($self->{option_results}->{filter_name}) && $self->{option_results}->{filter_name} ne '' &&
             $_->{name} !~ /$self->{option_results}->{filter_name}/) {
             $self->{output}->output_add(long_msg => "skipping volume '" . $_->{name} . "': no matching filter.", debug => 1);
             next;
         }
 
-        $self->{volumes}->{ $_->{name} } = {
-            display => $_->{name},
+        $self->{volumes}->{$name} = {
+            display => $name,
             state => $_->{state},
 
             total_space => $_->{space}->{size},
@@ -214,7 +223,11 @@ Example: --filter-counters='^usage$'
 
 =item B<--filter-name>
 
-Filter volume name (can be a regexp).
+Filter volumes by volume name (can be a regexp).
+
+=item B<--filter-vserver-name>
+
+Filter volumes by vserver name (can be a regexp).
 
 =item B<--unknown-status>
 

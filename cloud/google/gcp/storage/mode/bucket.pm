@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Centreon (http://www.centreon.com/)
+# Copyright 2021 Centreon (http://www.centreon.com/)
 #
 # Centreon is a full-fledged industry-strength solution that meets
 # the needs in IT infrastructure and application monitoring for
@@ -124,12 +124,12 @@ __END__
 
 =head1 MODE
 
-Check storage network metrics.
+Check storage bucket metrics.
 
 Example:
 
 perl centreon_plugins.pl --plugin=cloud::google::gcp::storage::plugin
---mode=network --dimension-value=mydatabaseid --filter-metric='sent'
+--mode=bucket --dimension-value=mybucketname --filter-metric='sent'
 --aggregation='average' --critical-received-volume='10' --verbose
 
 Default aggregation: 'average' / All aggregations are valid.
