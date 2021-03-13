@@ -22,7 +22,8 @@ package apps::protocols::http::plugin;
 
 use strict;
 use warnings;
-use base qw(centreon::plugins::script_simple);
+use base qw(centreon::plugins::script_custom);
+use Data::Dumper;
 
 sub new {
     my ($class, %options) = @_;
@@ -36,6 +37,9 @@ sub new {
         'response'         => 'apps::protocols::http::mode::response',
         'soap-content'     => 'apps::protocols::http::mode::soapcontent'
     };
+    $self->{custom_modes}{api} = 'apps::protocols::http::custom::api';
+
+#    print Dumper($self);
 
     return $self;
 }

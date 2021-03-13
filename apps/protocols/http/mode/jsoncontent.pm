@@ -21,6 +21,7 @@
 package apps::protocols::http::mode::jsoncontent;
 
 use base qw(centreon::plugins::mode);
+use Data::Dumper;
 
 use strict;
 use warnings;
@@ -73,7 +74,8 @@ sub new {
         'values-separator:s'      => { name => 'values_separator', default => ', ' },
         'lookup-perfdatas-nagios:s'  => { name => 'lookup_perfdatas_nagios'},
         'data:s'                  => { name => 'data' },
-        'lookup:s@'               => { name => 'lookup' }
+        'lookup:s@'               => { name => 'lookup' },
+        'authtoken:s'               => { name => 'authtoken' }
     });
     
     $self->{count} = 0;
@@ -115,7 +117,7 @@ sub check_options {
        $self->{output}->add_option_msg(short_msg => "Wrong critical-time threshold '" . $self->{option_results}->{critical_time} . "'.");
        $self->{output}->option_exit();
     }
-
+ 
     $self->{http}->set_options(%{$self->{option_results}});
 }
 
@@ -327,6 +329,10 @@ sub lookup_perfdata_nagios {
 
 sub run {
     my ($self, %options) = @_;
+
+    if (defined($self->{option_results}->{authtoken})) {
+        my $authtoken = $options{custom}->authtoken();
+    }
 
     $self->load_request();
 
