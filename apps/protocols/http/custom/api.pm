@@ -76,9 +76,14 @@ sub check_options {
    
    if (defined($self->{option_results}->{authtoken})) {
 
-       $self->{hostname} = (defined($self->{option_results}->{hostname})) ? $self->{option_results}->{hostname} : undef;
-       $self->{proto} = (defined($self->{option_results}->{proto})) ? $self->{option_results}->{proto} : 'http';
-       $self->{port} = (defined($self->{option_results}->{port})) ? $self->{option_results}->{port} : 80;
+       if ($self->{option_results}->{authtoken} eq '') {
+          $self->{output}->add_option_msg(short_msg => "Need to specify --authtoken option example : centreon-auth-token.");
+          $self->{output}->option_exit();
+       }
+
+       $self->{hostname} = (defined($self->{option_results}->{api_hostname})) ? $self->{option_results}->{api_hostname} : $self->{option_results}->{hostname};
+       $self->{proto} = (defined($self->{option_results}->{api_proto})) ? $self->{option_results}->{api_proto} : $self->{option_results}->{proto};
+       $self->{port} = (defined($self->{option_results}->{api_port})) ? $self->{option_results}->{api_port} : $self->{option_results}->{port};
        $self->{api_username} = (defined($self->{option_results}->{api_username})) ?
            $self->{option_results}->{api_username} : undef;
        $self->{api_password} = (defined($self->{option_results}->{api_password})) ?
@@ -100,6 +105,8 @@ sub check_options {
            $self->{output}->add_option_msg(short_msg => "Need to specify --api-password option.");
            $self->{output}->option_exit();
       }
+      
+#print Dumper($self->{hostname});
 
        $self->{cache}->check_options(option_results => $self->{option_results});
    }
@@ -129,12 +136,14 @@ sub settings {
     delete($self->{option_results}->{header});
     $self->{http}->add_header(key => 'Accept', value => 'application/json');
     if (defined($self->{auth_token})) {
-        $self->{http}->add_header(key => 'centreon-auth-token', value => $self->{auth_token});
+        #$self->{http}->add_header(key => 'centreon-auth-token', value => $self->{auth_token});
+        $self->{http}->add_header(key => $self->{option_results}->{authtoken}, value => $self->{auth_token});
     }
     $self->{http}->set_options(%{$self->{option_results}});
     $self->{option_results}->{header} = $saveheader;
     if (defined($self->{auth_token})) {
-        unshift @{$self->{option_results}->{header}} ,"centreon-auth-token: $self->{auth_token}";
+        #unshift @{$self->{option_results}->{header}} ,"centreon-auth-token: $self->{auth_token}";
+        unshift @{$self->{option_results}->{header}} ,"$self->{option_results}->{authtoken}: $self->{auth_token}";
     }
 
     #print Dumper($self->{option_results}->{header});
@@ -143,7 +152,7 @@ sub settings {
 sub get_auth_token {
     my ($self, %options) = @_;
 
-    my $has_cache_file = $options{statefile}->read(statefile => 'mon_api_' . md5_hex($self->{hostname}) .
+    my $has_cache_file = $options{statefile}->read(statefile => $self->{option_results}->{authtoken} . md5_hex($self->{hostname}) .
         '_' . md5_hex($self->{api_username}));
     my $expires_on = $options{statefile}->get(name => 'expires_on');
     my $auth_token = $options{statefile}->get(name => 'auth_token');
