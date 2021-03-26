@@ -21,7 +21,6 @@
 package apps::protocols::http::mode::jsoncontent;
 
 use base qw(centreon::plugins::mode);
-use Data::Dumper;
 
 use strict;
 use warnings;

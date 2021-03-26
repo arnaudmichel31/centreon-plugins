@@ -18,9 +18,7 @@
 # limitations under the License.
 #
 
-#package apps::centreon::restapi::custom::api;
 package apps::protocols::http::custom::api;
-use Data::Dumper;
 
 use strict;
 use warnings;
@@ -106,8 +104,6 @@ sub check_options {
            $self->{output}->option_exit();
       }
       
-#print Dumper($self->{hostname});
-
        $self->{cache}->check_options(option_results => $self->{option_results});
    }
     return 0;
@@ -136,23 +132,20 @@ sub settings {
     delete($self->{option_results}->{header});
     $self->{http}->add_header(key => 'Accept', value => 'application/json');
     if (defined($self->{auth_token})) {
-        #$self->{http}->add_header(key => 'centreon-auth-token', value => $self->{auth_token});
         $self->{http}->add_header(key => $self->{option_results}->{authtoken}, value => $self->{auth_token});
     }
     $self->{http}->set_options(%{$self->{option_results}});
     $self->{option_results}->{header} = $saveheader;
     if (defined($self->{auth_token})) {
-        #unshift @{$self->{option_results}->{header}} ,"centreon-auth-token: $self->{auth_token}";
         unshift @{$self->{option_results}->{header}} ,"$self->{option_results}->{authtoken}: $self->{auth_token}";
     }
 
-    #print Dumper($self->{option_results}->{header});
 }
 
 sub get_auth_token {
     my ($self, %options) = @_;
 
-    my $has_cache_file = $options{statefile}->read(statefile => $self->{option_results}->{authtoken} . md5_hex($self->{hostname}) .
+    my $has_cache_file = $options{statefile}->read(statefile => $self->{option_results}->{authtoken} . '_' . md5_hex($self->{hostname}) .
         '_' . md5_hex($self->{api_username}));
     my $expires_on = $options{statefile}->get(name => 'expires_on');
     my $auth_token = $options{statefile}->get(name => 'auth_token');
@@ -201,13 +194,10 @@ sub request_api {
     $self->settings();
     
     my $encoded_form_post;
-    #print "toto";
-    #print Dumper(%options);
     eval {
         $encoded_form_post = JSON::XS->new->utf8->encode($options{query_form_post});
     };
-    #print "toto";
-    #print Dumper($encoded_form_post);
+
     if ($@) {
         $self->{output}->add_option_msg(short_msg => "Cannot encode json request");
         $self->{output}->option_exit();
@@ -245,8 +235,6 @@ sub submit_result {
         query_form_post => $options{post_data},
     );
     
-    #print "in submit result";
-    #print Dumper($self);
     return ($response, $raw);
 }
 
