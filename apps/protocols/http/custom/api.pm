@@ -339,6 +339,10 @@ Centreon api-client_id if --api-key defined (Default : 'GDS').
 
 API base url path (Default: '/centreon/api/index.php').
 
+=item B<--api-tokenexpires>
+
+API token expires time (Default : 3600).
+
 =item B<--timeout>
 
 Set HTTP timeout in seconds (Default: '10').
