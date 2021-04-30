@@ -143,18 +143,34 @@ sub settings {
     my ($self, %options) = @_;
 
     $self->build_options_for_httplib();
+    # on sauve les headers passés en paramètre pour l'appli
     my $saveheader = $self->{option_results}->{header};
+    # on supprime tous les headers
     delete($self->{option_results}->{header});
+    # on met en dur le header pour aller chercher le token
     $self->{http}->add_header(key => 'Accept', value => 'application/json');
-    if (defined($self->{auth_token})) {
-        $self->{http}->add_header(key => $self->{option_results}->{authtoken}, value => $self->{auth_token});
-    }
+    #push @{$self->{option_results}->{header}} ,"Content-Type: application/json";
+
+    # si le token existe on met à jour avec le header aved le token
     $self->{http}->set_options(%{$self->{option_results}});
+    
+    #On redefinit les headers de l'appli dans les options
     $self->{option_results}->{header} = $saveheader;
+    # si le token est defini on le met en tête de header
     if (defined($self->{auth_token})) {
         unshift @{$self->{option_results}->{header}} ,"$self->{option_results}->{authtoken}: $self->{auth_token}";
     }
 
+}
+
+
+sub settingsbis {
+    my ($self, %options) = @_;
+
+    $self->build_options_for_httplib();
+
+    $self->{http}->set_options(%{$self->{option_results}});
+ 
 }
 
 sub get_auth_token {
@@ -183,11 +199,9 @@ sub get_auth_token {
 
         $self->settings();
 
-       
-   
         my $content = $self->{http}->request(
             method => 'POST',
-            url_path => '/centreon/api/index.php?action=authenticate',
+            url_path => $self->{api_path},
             post_param => $post_param
         );
 
